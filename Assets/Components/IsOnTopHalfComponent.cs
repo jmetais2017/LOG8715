@@ -1,0 +1,2 @@
+
+public struct IsOnTopHalfComponent : IComponent {}

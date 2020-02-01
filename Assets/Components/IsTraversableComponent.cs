@@ -1,0 +1,3 @@
+
+
+public struct IsTraversableComponent : IComponent {}
