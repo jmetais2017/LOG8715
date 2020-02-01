@@ -8,8 +8,15 @@ public class RegisterSystems
         List<ISystem> toRegister = new List<ISystem>();
 
         // AJOUTEZ VOS SYSTEMS ICI
-        CreationSystem firstSystem = new CreationSystem();
-        toRegister.Add(firstSystem);
+        CreationSystem createSyst = new CreationSystem();
+        MoveSystem moveSyst = new MoveSystem();
+        FrameTimeSystem frameTimeSyst = new FrameTimeSystem();
+        RollBackSystem rollBackSyst = new RollBackSystem();
+
+        toRegister.Add(createSyst);
+        toRegister.Add(moveSyst);
+        toRegister.Add(frameTimeSyst);
+        toRegister.Add(rollBackSyst);
 
         return toRegister;
     }
