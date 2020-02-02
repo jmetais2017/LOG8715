@@ -12,7 +12,6 @@ public class CreationSystem : ISystem
         }
     }
 
-
     public void UpdateSystem()
     {
         ECSManager manager = ECSManager.Instance;
@@ -37,7 +36,14 @@ public class CreationSystem : ISystem
             PositionComponent shapePos = new PositionComponent();
             shapePos.position = shape.initialPos;
             ComponentHandler.positions.Add(shapePos);
-            //TODO : create IsInUpperHalf Tag
+            
+            Vector3 shapeWorldPos = new Vector3(shape.initialPos[0], shape.initialPos[1], 0.0f);
+            Vector3 shapeScreenPos = Camera.main.WorldToScreenPoint(shapeWorldPos);
+
+            if(shapeScreenPos.y >= Screen.height / 2.0f){
+                IsOnTopHalfComponent upperHalfTag = new IsOnTopHalfComponent();
+                ComponentHandler.upperHalf.Add(id, upperHalfTag);
+            }
 
             //Création des composantes "size" et "initialSize"
             manager.UpdateShapeSize(id, shape.size);
@@ -80,8 +86,6 @@ public class CreationSystem : ISystem
                 SpeedComponent newSpeed = new SpeedComponent();
                 newSpeed.speed = new Vector2(0.0f, 0.0f);
                 ComponentHandler.speeds[(int) id] = newSpeed;
-
-                //TODO : create Type Tag
             }
             else
             {
@@ -90,19 +94,18 @@ public class CreationSystem : ISystem
                 {
                     //Sans collisions
                     manager.UpdateShapeColor(id, Color.green);
-
-                    //TODO : create Type Tag
+                    IsTraversableComponent noCollisionTag = new IsTraversableComponent();
+                    ComponentHandler.traversables.Add(id, noCollisionTag);
                 }
                 else
                 {
                     //Avec collisions
                     manager.UpdateShapeColor(id, Color.blue);
-
-                    //TODO : create Type Tag
                 }
             }
 
             id++;
+
         });
 
         //Désactivation du système après la première frame
