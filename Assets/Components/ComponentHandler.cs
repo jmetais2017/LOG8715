@@ -1,32 +1,52 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using System.Reflection;
+
 
 public static class ComponentHandler
 {
-    //Liste des id utilisés
-    public static List<EntityComponent> entities = new List<EntityComponent>();
+    //Conteneur principal : un dictionnaire dans lequel le conteneur de chaque type de components a pour clé ce type
+    private static Dictionary<Type, Dictionary<uint, IComponent>> components = new Dictionary<Type, Dictionary<uint, IComponent>>();
 
-    //Transform
-    public static List<PositionComponent> positions = new List<PositionComponent>();
-    public static List<SizeComponent> sizes = new List<SizeComponent>();
-    public static List<SpeedComponent> speeds = new List<SpeedComponent>();
+    //Renvoie le conteneur de tous les components du type spécifié
+    public static Dictionary<uint, T> GetComponentsOfType<T>() where T : IComponent
+    {
+        Dictionary<uint, T> dico = new Dictionary<uint, T>();
+        foreach(KeyValuePair<uint, IComponent> keyvaluepair in components[typeof(T)])
+        {
+            dico.Add(keyvaluepair.Key, (T) keyvaluepair.Value);
+        }
+        return dico;
+    }
 
-    public static List<InitialSizeComponent> initialSizes = new List<InitialSizeComponent>();
+    //Renvoie le component du type spécifié de l'entité id
+    public static T GetComponent<T>(uint id)
+    {
+        return (T) components[typeof(T)][id];
+    }
 
-    //Historiques pour le retour en arrière
-    public static List<PositionHistoryComponent> positionHistories = new List<PositionHistoryComponent>();
-    public static List<SizeHistoryComponent> sizeHistories = new List<SizeHistoryComponent>();
-    public static List<SpeedHistoryComponent> speedHistories = new List<SpeedHistoryComponent>();
+    //Ajoute une entrée au conteneur principal, et donc un type de component reconnu
+    public static void RegisterComponentType<T>(Dictionary<uint, T> compDico) where T : IComponent
+    {
+        Dictionary<uint, IComponent> dico = new Dictionary<uint, IComponent>();
+        foreach(KeyValuePair<uint, T> keyvaluepair in compDico)
+        {
+            dico.Add(keyvaluepair.Key, (IComponent) keyvaluepair.Value);
+        }
+        components[typeof(T)] = dico;;
+    }
 
-    public static LinkedList<float> frameTimesHistory = new LinkedList<float>();
+    //Affecte la valeur du component du type spécifié de l'entité id
+    public static void SetComponent<T>(uint id, IComponent comp)
+    {
+        components[typeof(T)][id] = comp;
+    }
 
-    //Tags
-    public static Dictionary<uint, IsTraversableComponent> traversables = new Dictionary<uint, IsTraversableComponent>();
-    public static Dictionary<uint, IsOnTopHalfComponent> upperHalf = new Dictionary<uint, IsOnTopHalfComponent>();
-
-    //Constantes de la simulation
-    public static int maxFramesPerSec = 100;
-
-    public static float lastRollback = 0.0f;
+    //Supprime le component du type spécifié de l'entité id
+    public static void RemoveComponent<T>(uint id)
+    {
+        components[typeof(T)].Remove(id);
+    }
 }

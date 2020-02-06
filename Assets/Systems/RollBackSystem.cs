@@ -13,23 +13,25 @@ public class RollBackSystem : ISystem
         }
     }
 
-
     public void UpdateSystem()
     {
         ECSManager manager = ECSManager.Instance;
 
-        // foreach( KeyValuePair<uint, IsOnTopHalfComponent> kvp in ComponentHandler.upperHalf )
+
+        //Test sur les tags "isOnTopHalf"
+
+        // foreach( KeyValuePair<uint, IsOnTopHalfComponent> kvp in ComponentHandler.GetComponentsOfType<IsOnTopHalfComponent>())
         // {
         //     manager.UpdateShapeColor(kvp.Key, Color.yellow);
         // }
-        // ComponentHandler.entities.ForEach(delegate(EntityComponent entity)
+        // foreach(KeyValuePair<uint, EntityComponent> keyvaluepair in ComponentHandler.GetComponentsOfType<EntityComponent>())
         // {
-        //     uint id = entity.id;
-        //     if(!ComponentHandler.upperHalf.ContainsKey(id))
+        //     uint id = keyvaluepair.Value.id;
+        //     if(!ComponentHandler.GetComponentsOfType<IsOnTopHalfComponent>().ContainsKey(id))
         //     {
         //         manager.UpdateShapeColor(id, Color.black);
         //     }
-        // });
+        // }
 
 
 
@@ -38,55 +40,55 @@ public class RollBackSystem : ISystem
         //Activation par appui sur la barre d'espace
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if(frameTime - ComponentHandler.lastRollback > 2.0f)
+            if(frameTime - ComponentHandler.GetComponent<LastRollBackComponent>(0).lastRollBack > 2.0f)
             {
                 //Si plus de 2 secondes se sont écoulées depuis la dernière activation, on effectue le roll back
 
                 //Récupération des données à utiliser pour le roll back
-                float currentHistoryTime = ComponentHandler.frameTimesHistory.First.Value;
+                float currentHistoryTime = ComponentHandler.GetComponent<FrameTimesHistoryComponent>(0).frameTimesHistory.First.Value;
                 while(currentHistoryTime < frameTime - 2.0f){
-                    ComponentHandler.frameTimesHistory.RemoveFirst();
+                    ComponentHandler.GetComponent<FrameTimesHistoryComponent>(0).frameTimesHistory.RemoveFirst();
 
                     //On vide l'historique de chaque entité jusqu'à arriver à 2 secondes dans le passé
-                    ComponentHandler.entities.ForEach(delegate(EntityComponent entity)
+                    foreach(KeyValuePair<uint, EntityComponent> keyvaluepair in ComponentHandler.GetComponentsOfType<EntityComponent>())
                     {
-                        uint id = entity.id;
+                        uint id = keyvaluepair.Value.id;
 
-                        ComponentHandler.positionHistories[(int) id].positionHistory.RemoveFirst();
-                        ComponentHandler.sizeHistories[(int) id].sizeHistory.RemoveFirst();
-                        ComponentHandler.speedHistories[(int) id].speedHistory.RemoveFirst();
-                    });
+                        ComponentHandler.GetComponent<PositionHistoryComponent>(id).positionHistory.RemoveFirst();
+                        ComponentHandler.GetComponent<SizeHistoryComponent>(id).sizeHistory.RemoveFirst();
+                        ComponentHandler.GetComponent<SpeedHistoryComponent>(id).speedHistory.RemoveFirst();
+                    }
 
-                    currentHistoryTime = ComponentHandler.frameTimesHistory.First.Value;
+                    currentHistoryTime = ComponentHandler.GetComponent<FrameTimesHistoryComponent>(0).frameTimesHistory.First.Value;
                 }
 
                 //Réinitialisation des components
-                ComponentHandler.entities.ForEach(delegate(EntityComponent entity)
+                foreach(KeyValuePair<uint, EntityComponent> keyvaluepair in ComponentHandler.GetComponentsOfType<EntityComponent>())
                 {
-                    uint id = entity.id;
+                    uint id = keyvaluepair.Value.id;
 
                     //Position
-                    Vector2 newPos = ComponentHandler.positionHistories[(int) id].positionHistory.First.Value;
+                    Vector2 newPos = ComponentHandler.GetComponent<PositionHistoryComponent>(id).positionHistory.First.Value;
 
                     manager.UpdateShapePosition(id, newPos);
                     PositionComponent shapePos = new PositionComponent();
                     shapePos.position = newPos;
-                    ComponentHandler.positions[(int) id] = shapePos;
+                    ComponentHandler.SetComponent<PositionComponent>(id, shapePos);
 
                     //Size
-                    float newSize = ComponentHandler.sizeHistories[(int) id].sizeHistory.First.Value;
+                    float newSize = ComponentHandler.GetComponent<SizeHistoryComponent>(id).sizeHistory.First.Value;
 
                     manager.UpdateShapeSize(id, newSize);
                     SizeComponent shapeSize = new SizeComponent();
                     shapeSize.size = newSize;
-                    ComponentHandler.sizes[(int) id] = shapeSize;
+                    ComponentHandler.SetComponent<SizeComponent>(id, shapeSize);
 
                     //Speed
-                    Vector2 newSpeed = ComponentHandler.speedHistories[(int) id].speedHistory.First.Value;
+                    Vector2 newSpeed = ComponentHandler.GetComponent<SpeedHistoryComponent>(id).speedHistory.First.Value;
 
                     SpeedComponent shapeSpeed = new SpeedComponent();
                     shapeSpeed.speed = newSpeed;
-                    ComponentHandler.speeds[(int) id] = shapeSpeed;
+                    ComponentHandler.SetComponent<SpeedComponent>(id, shapeSpeed);
 
                     //Collision tag
                     if(newSpeed != Vector2.zero)
@@ -95,19 +97,19 @@ public class RollBackSystem : ISystem
                         {
                             //Sans collisions
                             manager.UpdateShapeColor(id, Color.green);
-                            if(!ComponentHandler.traversables.ContainsKey(id))
+                            if(!ComponentHandler.GetComponentsOfType<IsTraversableComponent>().ContainsKey(id))
                             {
                                 IsTraversableComponent noCollisionTag = new IsTraversableComponent();
-                                ComponentHandler.traversables.Add(id, noCollisionTag);
+                                ComponentHandler.SetComponent<IsTraversableComponent>(id, noCollisionTag);
                             }
                         }
                         else
                         {
                             //Avec collisions
                             manager.UpdateShapeColor(id, Color.blue);
-                            if(ComponentHandler.traversables.ContainsKey(id))
+                            if(ComponentHandler.GetComponentsOfType<IsTraversableComponent>().ContainsKey(id))
                             {
-                                ComponentHandler.traversables.Remove(id);
+                                ComponentHandler.RemoveComponent<IsTraversableComponent>(id);
                             }
                         }
                     }
@@ -118,24 +120,26 @@ public class RollBackSystem : ISystem
 
                     if(shapeScreenPos.y >= Screen.height / 2.0f)
                     {
-                        if(!ComponentHandler.upperHalf.ContainsKey(id))
+                        if(!ComponentHandler.GetComponentsOfType<IsOnTopHalfComponent>().ContainsKey(id))
                         {
                             IsOnTopHalfComponent upperHalfTag = new IsOnTopHalfComponent();
-                            ComponentHandler.upperHalf.Add(id, upperHalfTag);
+                            ComponentHandler.SetComponent<IsOnTopHalfComponent>(id, upperHalfTag);
                         }
                     }
                     else
                     {
-                        if(ComponentHandler.upperHalf.ContainsKey(id))
+                        if(ComponentHandler.GetComponentsOfType<IsOnTopHalfComponent>().ContainsKey(id))
                         {
-                            ComponentHandler.upperHalf.Remove(id);
+                            ComponentHandler.RemoveComponent<IsOnTopHalfComponent>(id);
                         }
                     }
-                });
+                }
 
 
                 //Actualisation du cooldown
-                ComponentHandler.lastRollback = frameTime;
+                LastRollBackComponent lastRollBack = new LastRollBackComponent();
+                lastRollBack.lastRollBack = frameTime;
+                ComponentHandler.SetComponent<LastRollBackComponent>(0, lastRollBack);
 
                 Debug.Log("Retour en arrière de 2 secondes !");
             }
@@ -143,7 +147,7 @@ public class RollBackSystem : ISystem
             {
                 //Sinon, on affiche l'état du cooldown
                 Debug.Log("Cooldown restant : ");
-                Debug.Log(2.0f - (frameTime - ComponentHandler.lastRollback));
+                Debug.Log(2.0f - (frameTime - ComponentHandler.GetComponent<LastRollBackComponent>(0).lastRollBack));
             }
         }
     }

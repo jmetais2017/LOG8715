@@ -19,11 +19,11 @@ public class FrameTimeSystem : ISystem
         float frameTime = Time.time;
 
         //Sauvegarde du timecode de la frame courante
-        ComponentHandler.frameTimesHistory.AddLast(frameTime);
+        ComponentHandler.GetComponent<FrameTimesHistoryComponent>(0).frameTimesHistory.AddLast(frameTime);
 
         //Ne pas garder plus de timecodes que nécessaire
-        if(ComponentHandler.frameTimesHistory.Count > 2*ComponentHandler.maxFramesPerSec){
-            ComponentHandler.frameTimesHistory.RemoveFirst();
+        if(ComponentHandler.GetComponent<FrameTimesHistoryComponent>(0).frameTimesHistory.Count > 2*ComponentHandler.GetComponent<MaxFramesPerSecComponent>(0).maxFramesPerSec){
+            ComponentHandler.GetComponent<FrameTimesHistoryComponent>(0).frameTimesHistory.RemoveFirst();
         }
     }
 }

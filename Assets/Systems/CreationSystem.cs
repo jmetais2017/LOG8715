@@ -15,11 +15,56 @@ public class CreationSystem : ISystem
     public void UpdateSystem()
     {
         ECSManager manager = ECSManager.Instance;
-        uint id = 0;
+        uint id = 1;
+
 
         //Initialisation du cooldown
         float frameTime = Time.time;
-        ComponentHandler.lastRollback = frameTime;
+
+
+        //Création des conteneurs de components
+
+        //ID
+        ComponentHandler.RegisterComponentType<EntityComponent>(new Dictionary<uint, EntityComponent>());
+
+        //Transform
+        ComponentHandler.RegisterComponentType<PositionComponent>(new Dictionary<uint, PositionComponent>());
+        ComponentHandler.RegisterComponentType<SizeComponent>(new Dictionary<uint, SizeComponent>());
+        ComponentHandler.RegisterComponentType<SpeedComponent>(new Dictionary<uint, SpeedComponent>());
+
+        //Initial sizes
+        ComponentHandler.RegisterComponentType<InitialSizeComponent>(new Dictionary<uint, InitialSizeComponent>());
+
+        //Histories
+        ComponentHandler.RegisterComponentType<PositionHistoryComponent>(new Dictionary<uint, PositionHistoryComponent>());
+        ComponentHandler.RegisterComponentType<SizeHistoryComponent>(new Dictionary<uint, SizeHistoryComponent>());
+        ComponentHandler.RegisterComponentType<SpeedHistoryComponent>(new Dictionary<uint, SpeedHistoryComponent>());
+
+        //Tags
+        ComponentHandler.RegisterComponentType<IsTraversableComponent>(new Dictionary<uint, IsTraversableComponent>());
+        ComponentHandler.RegisterComponentType<IsOnTopHalfComponent>(new Dictionary<uint, IsOnTopHalfComponent>());
+
+        //Settings
+        FrameTimesHistoryComponent timeHistory = new FrameTimesHistoryComponent();
+        LinkedList<float> frameTimes = new LinkedList<float>();
+        timeHistory.frameTimesHistory = frameTimes;
+        Dictionary<uint, FrameTimesHistoryComponent> timeHistoryDico = new Dictionary<uint, FrameTimesHistoryComponent>();
+        timeHistoryDico.Add(0, timeHistory);
+        ComponentHandler.RegisterComponentType<FrameTimesHistoryComponent>(timeHistoryDico);
+
+        MaxFramesPerSecComponent maxFrameRate = new MaxFramesPerSecComponent();
+        int maxFramesPerSec = 100;
+        maxFrameRate.maxFramesPerSec = maxFramesPerSec;
+        Dictionary<uint, MaxFramesPerSecComponent> maxFrameRateDico = new Dictionary<uint, MaxFramesPerSecComponent>();
+        maxFrameRateDico.Add(0, maxFrameRate);
+        ComponentHandler.RegisterComponentType<MaxFramesPerSecComponent>(maxFrameRateDico);
+
+        LastRollBackComponent lastRollBack = new LastRollBackComponent();
+        float firstTimer = 0.0f;
+        lastRollBack.lastRollBack = firstTimer;
+        Dictionary<uint, LastRollBackComponent> lastRollBackDico = new Dictionary<uint, LastRollBackComponent>();
+        lastRollBackDico.Add(0, lastRollBack);
+        ComponentHandler.RegisterComponentType<LastRollBackComponent>(lastRollBackDico);
 
 
         //Pour chaque cercle prédéfini
@@ -29,52 +74,57 @@ public class CreationSystem : ISystem
             manager.CreateShape(id, shape);
             EntityComponent entity = new EntityComponent();
             entity.id = id;
-            ComponentHandler.entities.Add(entity);
+            ComponentHandler.SetComponent<EntityComponent>(id, entity);
 
             //Création de la composante "position"
             manager.UpdateShapePosition(id, shape.initialPos);
             PositionComponent shapePos = new PositionComponent();
             shapePos.position = shape.initialPos;
-            ComponentHandler.positions.Add(shapePos);
+            ComponentHandler.SetComponent<PositionComponent>(id, shapePos);
             
             Vector3 shapeWorldPos = new Vector3(shape.initialPos[0], shape.initialPos[1], 0.0f);
             Vector3 shapeScreenPos = Camera.main.WorldToScreenPoint(shapeWorldPos);
 
             if(shapeScreenPos.y >= Screen.height / 2.0f){
                 IsOnTopHalfComponent upperHalfTag = new IsOnTopHalfComponent();
-                ComponentHandler.upperHalf.Add(id, upperHalfTag);
+                ComponentHandler.SetComponent<IsOnTopHalfComponent>(id, upperHalfTag);
             }
+
 
             //Création des composantes "size" et "initialSize"
             manager.UpdateShapeSize(id, shape.size);
+
             SizeComponent shapeSize = new SizeComponent();
             InitialSizeComponent initialShapeSize = new InitialSizeComponent();
+
             shapeSize.size = shape.size;
             initialShapeSize.initialSize = shape.size;
-            ComponentHandler.sizes.Add(shapeSize);
-            ComponentHandler.initialSizes.Add(initialShapeSize);
+
+            ComponentHandler.SetComponent<SizeComponent>(id, shapeSize);
+            ComponentHandler.SetComponent<InitialSizeComponent>(id, initialShapeSize);
+
 
             //Création de la composante "speed"
             SpeedComponent shapeSpeed = new SpeedComponent();
             shapeSpeed.speed = shape.initialSpeed;
-            ComponentHandler.speeds.Add(shapeSpeed);
+            ComponentHandler.SetComponent<SpeedComponent>(id, shapeSpeed);
 
 
             //Initialisation des historiques
             PositionHistoryComponent shapePosHistory = new PositionHistoryComponent();
             shapePosHistory.positionHistory = new LinkedList<Vector2>();
             shapePosHistory.positionHistory.AddLast(shape.initialPos);
-            ComponentHandler.positionHistories.Add(shapePosHistory);
+            ComponentHandler.SetComponent<PositionHistoryComponent>(id, shapePosHistory);
 
             SizeHistoryComponent shapeSizeHistory = new SizeHistoryComponent();
             shapeSizeHistory.sizeHistory = new LinkedList<float>();
             shapeSizeHistory.sizeHistory.AddLast(shape.size);
-            ComponentHandler.sizeHistories.Add(shapeSizeHistory);
+            ComponentHandler.SetComponent<SizeHistoryComponent>(id, shapeSizeHistory);
 
             SpeedHistoryComponent shapeSpeedHistory = new SpeedHistoryComponent();
             shapeSpeedHistory.speedHistory = new LinkedList<Vector2>();
             shapeSpeedHistory.speedHistory.AddLast(shape.initialSpeed);
-            ComponentHandler.speedHistories.Add(shapeSpeedHistory);
+            ComponentHandler.SetComponent<SpeedHistoryComponent>(id, shapeSpeedHistory);
 
 
             //Choix du type, et donc de la couleur
@@ -85,7 +135,7 @@ public class CreationSystem : ISystem
                 manager.UpdateShapeColor(id, Color.red);
                 SpeedComponent newSpeed = new SpeedComponent();
                 newSpeed.speed = new Vector2(0.0f, 0.0f);
-                ComponentHandler.speeds[(int) id] = newSpeed;
+                ComponentHandler.SetComponent<SpeedComponent>(id, newSpeed);
             }
             else
             {
@@ -95,7 +145,7 @@ public class CreationSystem : ISystem
                     //Sans collisions
                     manager.UpdateShapeColor(id, Color.green);
                     IsTraversableComponent noCollisionTag = new IsTraversableComponent();
-                    ComponentHandler.traversables.Add(id, noCollisionTag);
+                    ComponentHandler.SetComponent<IsTraversableComponent>(id, noCollisionTag);
                 }
                 else
                 {
