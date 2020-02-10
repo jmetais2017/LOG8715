@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class RollBackSystem : ISystem
 {
+    private float cooldown = 2.0f;
+
     public string Name 
     { 
         get
@@ -40,13 +42,13 @@ public class RollBackSystem : ISystem
         //Activation par appui sur la barre d'espace
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if(frameTime - ComponentHandler.GetComponent<LastRollBackComponent>(0).lastRollBack > 2.0f)
+            if(frameTime - ComponentHandler.GetComponent<LastRollBackComponent>(0).lastRollBack > cooldown)
             {
                 //Si plus de 2 secondes se sont écoulées depuis la dernière activation, on effectue le roll back
 
                 //Récupération des données à utiliser pour le roll back
                 float currentHistoryTime = ComponentHandler.GetComponent<FrameTimesHistoryComponent>(0).frameTimesHistory.First.Value;
-                while(currentHistoryTime < frameTime - 2.0f){
+                while(currentHistoryTime < frameTime - cooldown){
                     ComponentHandler.GetComponent<FrameTimesHistoryComponent>(0).frameTimesHistory.RemoveFirst();
 
                     //On vide l'historique de chaque entité jusqu'à arriver à 2 secondes dans le passé
@@ -147,7 +149,7 @@ public class RollBackSystem : ISystem
             {
                 //Sinon, on affiche l'état du cooldown
                 Debug.Log("Cooldown restant : ");
-                Debug.Log(2.0f - (frameTime - ComponentHandler.GetComponent<LastRollBackComponent>(0).lastRollBack));
+                Debug.Log(cooldown - (frameTime - ComponentHandler.GetComponent<LastRollBackComponent>(0).lastRollBack));
             }
         }
     }
