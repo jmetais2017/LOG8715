@@ -14,6 +14,10 @@ public class CreationSystem : ISystem
 
     public void UpdateSystem()
     {
+        // Si on a déjà créé la liste des entités, on n'a pas à ré-entrer dans ce système.
+        if (ComponentHandler.ComponentExists<EntityComponent>()){
+            return;
+        }
         ECSManager manager = ECSManager.Instance;
         uint id = 1;
 
@@ -44,6 +48,11 @@ public class CreationSystem : ISystem
         ComponentHandler.RegisterComponentType<IsTraversableComponent>(new Dictionary<uint, IsTraversableComponent>());
         ComponentHandler.RegisterComponentType<IsOnTopHalfComponent>(new Dictionary<uint, IsOnTopHalfComponent>());
 
+        // Création de l'entité "settings" 
+        EntityComponent settingsEntity = new EntityComponent();
+        settingsEntity.id = 0;
+        ComponentHandler.SetComponent<EntityComponent>(0, settingsEntity);
+
         //Settings
         FrameTimesHistoryComponent timeHistory = new FrameTimesHistoryComponent();
         LinkedList<float> frameTimes = new LinkedList<float>();
@@ -65,6 +74,8 @@ public class CreationSystem : ISystem
         Dictionary<uint, LastRollBackComponent> lastRollBackDico = new Dictionary<uint, LastRollBackComponent>();
         lastRollBackDico.Add(0, lastRollBack);
         ComponentHandler.RegisterComponentType<LastRollBackComponent>(lastRollBackDico);
+
+
 
 
         //Pour chaque cercle prédéfini
@@ -159,6 +170,6 @@ public class CreationSystem : ISystem
         });
 
         //Désactivation du système après la première frame
-        manager.Config.systemsEnabled["creation"] = false;
+        //manager.Config.systemsEnabled["creation"] = false;
     }
 }
