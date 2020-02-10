@@ -10,6 +10,12 @@ public static class ComponentHandler
     //Conteneur principal : un dictionnaire dans lequel le conteneur de chaque type de components a pour clé ce type
     private static Dictionary<Type, Dictionary<uint, IComponent>> components = new Dictionary<Type, Dictionary<uint, IComponent>>();
 
+
+    public static bool ComponentExists<T>() where T : IComponent
+    {
+        return components.ContainsKey(typeof(T));
+    }
+
     //Renvoie le conteneur de tous les components du type spécifié
     public static Dictionary<uint, T> GetComponentsOfType<T>() where T : IComponent
     {
