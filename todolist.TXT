@@ -2,11 +2,23 @@
 	a - Gérer avec un tag les entités pour lesquelles il y a une collision à traiter
 	b - Appeler 5 cycles à chaque frame dans la partie haute vs 1 dans la partie basse
 
+
+	=> FAIT 
+
+
 2 - Introduire un component "isFirstFrame" pour gérer l'auto-désactivation du système de création
+
+	=> FAIT
+
 
 3 - Limiter le frame rate (avec un waitSystem ?)
 
+	=> Il semblerait que les FPS sont déjà limitées par Unity ? 
+
 4 - Gérer les valeurs numériques constantes pour ne pas laisser de "valeurs magiques" codées en dur
+
+	=> FAIT (pour le cooldown, y en a-t-il d'autres ?)
+
 
 5 - Obtenir la taille en pixels d'un cercle pour les collisions avec le bord de l'écran
 
