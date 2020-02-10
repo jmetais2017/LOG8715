@@ -12,9 +12,11 @@ public class RegisterSystems
         MoveSystem moveSyst = new MoveSystem();
         FrameTimeSystem frameTimeSyst = new FrameTimeSystem();
         RollBackSystem rollBackSyst = new RollBackSystem();
+        TurboSystem turboSyst = new TurboSystem();
 
         toRegister.Add(createSyst);
         toRegister.Add(moveSyst);
+        toRegister.Add(turboSyst);
         toRegister.Add(frameTimeSyst);
         toRegister.Add(rollBackSyst);
 
