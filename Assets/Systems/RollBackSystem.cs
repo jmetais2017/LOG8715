@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
+// Gère le retour en arrière lors de l'appui sur la barre espace.
+// Accès : LastRollBackComponent, FrameTimeHistoryComponent, PositionHistoryComponent,
+// SizeHistoryComponent, SpeedHistoryComponent (lecture, écriture)
+// PositionComponent, SizeComponent, SpeedComponent, IsTraversableComponent, 
+// IsOnTopHalfComponent (écriture)
 public class RollBackSystem : ISystem
 {
     private float cooldown = 2.0f;
@@ -52,9 +56,9 @@ public class RollBackSystem : ISystem
                     ComponentHandler.GetComponent<FrameTimesHistoryComponent>(0).frameTimesHistory.RemoveFirst();
 
                     //On vide l'historique de chaque entité jusqu'à arriver à 2 secondes dans le passé
-                    foreach(KeyValuePair<uint, EntityComponent> keyvaluepair in ComponentHandler.GetComponentsOfType<EntityComponent>())
+                    foreach(KeyValuePair<uint, SpeedComponent> keyvaluepair in ComponentHandler.GetComponentsOfType<SpeedComponent>())
                     {
-                        uint id = keyvaluepair.Value.id;
+                        uint id = keyvaluepair.Key;
 
                         ComponentHandler.GetComponent<PositionHistoryComponent>(id).positionHistory.RemoveFirst();
                         ComponentHandler.GetComponent<SizeHistoryComponent>(id).sizeHistory.RemoveFirst();
@@ -65,9 +69,9 @@ public class RollBackSystem : ISystem
                 }
 
                 //Réinitialisation des components
-                foreach(KeyValuePair<uint, EntityComponent> keyvaluepair in ComponentHandler.GetComponentsOfType<EntityComponent>())
+                foreach(KeyValuePair<uint, SpeedComponent> keyvaluepair in ComponentHandler.GetComponentsOfType<SpeedComponent>())
                 {
-                    uint id = keyvaluepair.Value.id;
+                    uint id = keyvaluepair.Key;
 
                     //Position
                     Vector2 newPos = ComponentHandler.GetComponent<PositionHistoryComponent>(id).positionHistory.First.Value;

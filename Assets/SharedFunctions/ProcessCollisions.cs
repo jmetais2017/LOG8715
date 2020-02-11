@@ -3,6 +3,11 @@ using System.Collections.Generic;
 
 public class ProcessCollisions {
 
+    // Parcourt la liste d'entités fournie et, pour chacune, effectue le traitement de la collision
+    // (excepté la vitesse, qui a été calculée lors de la collision) : réduction de la taille, et si besoin,
+    // mise à jour du component IsTraversable.
+
+    // Accès : SizeComponent (lecture, écriture), IsTraversableComponent (écriture).
     public static void ProcessSphereCollisions(List<uint> toProcess){
 
         ECSManager manager = ECSManager.Instance;
@@ -27,6 +32,13 @@ public class ProcessCollisions {
             }
         }
     }
+
+    // Pour l'entité donnée, vérifie si la sphère est au bord de l'écran. Si oui,
+    // rétablit sa taille , inverse sa vitesse, et rétablit son statut à non-traversable (si
+    // sa taille d'origine le permet).
+
+    // Accès : SpeedComponent, SizeComponent (lecture, écriture), IsTraversableComponent (écriture),
+    // InitialSizeComponent (lecture).
 
     public static void ProcessScreenCollisions(uint id) {
         

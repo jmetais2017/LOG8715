@@ -3,6 +3,11 @@ using System.Collections.Generic;
 
 public class CheckCollisions{
 
+    // Vérifie si l'entité d'id donnée a des collisions. Si oui, son id est ajoutée à la liste
+    // toProcess, et sa vitesse est mise à jour.
+
+    // Accès : SizeComponent, PositionComponent, IsTraversableComponent (lecture),
+    // SpeedComponent (lecture, écriture)
     private static void UpdateCollisionsOn(uint id, List<uint> toProcess) {
 
         float radius = ComponentHandler.GetComponent<SizeComponent>(id).size / 2.0f;
@@ -42,6 +47,11 @@ public class CheckCollisions{
         }
     }
 
+    // Parcourt toutes les entités mobiles, uniquement dans le haut de l'écran si onTopHalf = True,
+    // et renvoie la liste des entités étant en collision avec une autre. 
+
+    // Accès : IsOnTopHalfComponent, SizeComponent, PositionComponent, IsTraversableComponent (lecture),
+    // SpeedComponent (lecture, écriture)
     public static List<uint> FindCollisions(bool onTopHalf) {
         List<uint> toProcess = new List<uint>();
 

@@ -1,6 +1,17 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+// S'occupe d'effectuer tout ce qui a trait au déplacement (le déplacement en soi, plus la détection et gestion
+// des collisions) 4 fois supplémentaires, sur les objets en haut de l'écran. À noter, la vérification des 
+// objets en haut de l'écran est fait à chaque itération : si un objet sort du haut de l'écran au bout de 2
+// itérations, il ne bougera plus lors des 2 suivantes.
+
+// Accès : PositionComponent, SpeedComponent, SizeComponent, PositionHistoryComponent, 
+// SizeHistoryComponent, SpeedHistoryComponent, IsTraversableComponent, IsOnTopOfScreenComponent 
+// (lecture, écriture),
+// InitialSizeComponent (lecture)
+
+// (les mêmes que MoveSystem)
 public class TurboSystem : ISystem 
 {
     public string Name 

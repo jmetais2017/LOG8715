@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Effectue l'initialisation de tous les sytèmes et composants.
+// Accès : tous les composants (une fois).
 public class CreationSystem : ISystem
 {
     public string Name 

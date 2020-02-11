@@ -1,6 +1,15 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+// Effectue tout ce qui a trait au mouvement : mise à jour des positions, vérification des collisions,
+// mise à jour des vitesses / tailles lors de collisions. Ces opérations sont effectuées par des appels
+// aux fonctions utilitaires partagées MoveSphere.Move, CheckCollisions.FindCollisions, 
+// ProcessCollisions.ProcessSphereCollisions et ProcessCollisions.ProcessScreenCollisions.
+
+// Accès : PositionComponent, SpeedComponent, SizeComponent, PositionHistoryComponent, 
+// SizeHistoryComponent, SpeedHistoryComponent, IsTraversableComponent, IsOnTopOfScreenComponent 
+// (lecture, écriture),
+// InitialSizeComponent (lecture)
 public class MoveSystem : ISystem 
 {
     public string Name 
