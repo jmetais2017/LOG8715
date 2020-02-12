@@ -4,7 +4,11 @@ using System.Collections.Generic;
 public class CheckCollisions{
 
     // Vérifie si l'entité d'id donnée a des collisions. Si oui, son id est ajoutée à la liste
-    // toProcess, et sa vitesse est mise à jour.
+    // toProcess, et sa vitesse est mise à jour. 
+    
+    // NOTE : le calcul de la nouvelle vitesse est différent par rapport à ce qui était initialement demandé : 
+    // plutôt que de juste inverser la vitesse, les positions respectives des cercles sont pris en compte.
+    // Ainsi, après une collision, les deux sphères s'éloignent l'une de l'autre.
 
     // Accès : SizeComponent, PositionComponent, IsTraversableComponent (lecture),
     // SpeedComponent (lecture, écriture)
