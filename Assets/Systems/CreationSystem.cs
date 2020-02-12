@@ -77,6 +77,13 @@ public class CreationSystem : ISystem
         lastRollBackDico.Add(0, lastRollBack);
         ComponentHandler.RegisterComponentType<LastRollBackComponent>(lastRollBackDico);
 
+        RollBackCooldownComponent rollbackCd = new RollBackCooldownComponent();
+        rollbackCd.cooldown = 2.0f;
+        Dictionary<uint, RollBackCooldownComponent> rollbackCdDico = new Dictionary<uint, RollBackCooldownComponent>();
+        rollbackCdDico.Add(0, rollbackCd);
+        ComponentHandler.RegisterComponentType<RollBackCooldownComponent>(rollbackCdDico);
+
+
 
 
 

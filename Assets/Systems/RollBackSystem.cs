@@ -9,7 +9,6 @@ using UnityEngine;
 // IsOnTopHalfComponent (écriture)
 public class RollBackSystem : ISystem
 {
-    private float cooldown = 2.0f;
 
     public string Name 
     { 
@@ -22,6 +21,8 @@ public class RollBackSystem : ISystem
     public void UpdateSystem()
     {
         ECSManager manager = ECSManager.Instance;
+
+        float cooldown = ComponentHandler.GetComponent<RollBackCooldownComponent>(0).cooldown;
 
 
         //Test sur les tags "isOnTopHalf"
