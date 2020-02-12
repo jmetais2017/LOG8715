@@ -30,12 +30,18 @@ public class MoveSystem : ISystem
         {
             uint id = keyValuePair.Key;
             MoveSphere.Move(id);
+        }
+
+        foreach(KeyValuePair<uint, SpeedComponent> keyValuePair in ComponentHandler.GetComponentsOfType<SpeedComponent>())
+        {
+            uint id = keyValuePair.Key;
             ProcessCollisions.ProcessScreenCollisions(id);
         }
 
 
+
         //Liste des id des cercles dynamiques concernés par une collision (et qu'il faudra donc réduire et tagger)
-        List<uint> toProcess = CheckCollisions.FindCollisions(false);
+        HashSet<uint> toProcess = CheckCollisions.FindCollisions(false);
 
         ProcessCollisions.ProcessSphereCollisions(toProcess);
 

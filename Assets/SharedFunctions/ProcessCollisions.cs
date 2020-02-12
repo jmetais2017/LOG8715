@@ -8,7 +8,7 @@ public class ProcessCollisions {
     // mise à jour du component IsTraversable.
 
     // Accès : SizeComponent (lecture, écriture), IsTraversableComponent (écriture).
-    public static void ProcessSphereCollisions(List<uint> toProcess){
+    public static void ProcessSphereCollisions(HashSet<uint> toProcess){
 
         ECSManager manager = ECSManager.Instance;
 

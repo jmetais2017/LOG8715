@@ -8,7 +8,7 @@ public class CheckCollisions{
 
     // Accès : SizeComponent, PositionComponent, IsTraversableComponent (lecture),
     // SpeedComponent (lecture, écriture)
-    private static void UpdateCollisionsOn(uint id, List<uint> toProcess) {
+    private static void UpdateCollisionsOn(uint id, HashSet<uint> toProcess) {
 
         float radius = ComponentHandler.GetComponent<SizeComponent>(id).size / 2.0f;
         Vector2 position = ComponentHandler.GetComponent<PositionComponent>(id).position;
@@ -34,6 +34,7 @@ public class CheckCollisions{
                     if(distance < otherRadius + radius)
                     {
                         toProcess.Add(id);
+                        toProcess.Add(otherId);
 
                         //Mise à jour du vecteur vitesse
                         Vector2 newSpeed = (position - otherPosition) * speed.magnitude / distance;
@@ -52,8 +53,8 @@ public class CheckCollisions{
 
     // Accès : IsOnTopHalfComponent, SizeComponent, PositionComponent, IsTraversableComponent (lecture),
     // SpeedComponent (lecture, écriture)
-    public static List<uint> FindCollisions(bool onTopHalf) {
-        List<uint> toProcess = new List<uint>();
+    public static HashSet<uint> FindCollisions(bool onTopHalf) {
+        HashSet<uint> toProcess = new HashSet<uint>();
 
         //Détection des collisions cercle-cercle
         if (onTopHalf) {

@@ -33,11 +33,16 @@ public class TurboSystem : ISystem
             {
                 uint id = keyValuePair.Key;
                 MoveSphere.Move(id);
+            }
+
+            foreach(KeyValuePair<uint, IsOnTopHalfComponent> keyValuePair in ComponentHandler.GetComponentsOfType<IsOnTopHalfComponent>())
+            {
+                uint id = keyValuePair.Key;
                 ProcessCollisions.ProcessScreenCollisions(id);
             }
             
             //Liste des id des cercles dynamiques concernés par une collision (et qu'il faudra donc réduire et tagger)
-            List<uint> toProcess = CheckCollisions.FindCollisions(true);
+            HashSet<uint> toProcess = CheckCollisions.FindCollisions(true);
 
             ProcessCollisions.ProcessSphereCollisions(toProcess);
             }
