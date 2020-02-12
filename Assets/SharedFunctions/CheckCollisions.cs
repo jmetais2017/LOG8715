@@ -23,7 +23,7 @@ public class CheckCollisions{
         if(!ComponentHandler.GetComponentsOfType<IsTraversableComponent>().ContainsKey(id) & speed!=Vector2.zero)
         {
             //On teste toutes les autres entités
-            foreach(KeyValuePair<uint, SpeedComponent> otherKeyValuePair in ComponentHandler.GetComponentsOfType<SpeedComponent>())
+            foreach(KeyValuePair<uint, PositionComponent> otherKeyValuePair in ComponentHandler.GetComponentsOfType<PositionComponent>())
             {
                 uint otherId = otherKeyValuePair.Key;
 
@@ -38,7 +38,10 @@ public class CheckCollisions{
                     if(distance < otherRadius + radius)
                     {
                         toProcess.Add(id);
-                        toProcess.Add(otherId);
+                        if (ComponentHandler.HasComponent<SpeedComponent>(otherId))
+                        {
+                            toProcess.Add(otherId);
+                        }
 
                         //Mise à jour du vecteur vitesse
                         Vector2 newSpeed = (position - otherPosition) * speed.magnitude / distance;

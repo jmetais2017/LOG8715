@@ -98,10 +98,6 @@ public class CreationSystem : ISystem
             Vector3 shapeWorldPos = new Vector3(shape.initialPos[0], shape.initialPos[1], 0.0f);
             Vector3 shapeScreenPos = Camera.main.WorldToScreenPoint(shapeWorldPos);
 
-            if(shapeScreenPos.y >= Screen.height / 2.0f){
-                IsOnTopHalfComponent upperHalfTag = new IsOnTopHalfComponent();
-                ComponentHandler.SetComponent<IsOnTopHalfComponent>(id, upperHalfTag);
-            }
 
 
             //Création des composantes "size" et "initialSize"
@@ -118,9 +114,11 @@ public class CreationSystem : ISystem
 
 
             //Création de la composante "speed"
-            SpeedComponent shapeSpeed = new SpeedComponent();
-            shapeSpeed.speed = shape.initialSpeed;
-            ComponentHandler.SetComponent<SpeedComponent>(id, shapeSpeed);
+            /*if (shape.initialSpeed != Vector2.zero) {
+                SpeedComponent shapeSpeed = new SpeedComponent();
+                shapeSpeed.speed = shape.initialSpeed;
+                ComponentHandler.SetComponent<SpeedComponent>(id, shapeSpeed);
+            }*/
 
 
             //Initialisation des historiques
@@ -146,9 +144,6 @@ public class CreationSystem : ISystem
             {
                 //Le cercle créé est statique
                 manager.UpdateShapeColor(id, Color.red);
-                SpeedComponent newSpeed = new SpeedComponent();
-                newSpeed.speed = new Vector2(0.0f, 0.0f);
-                ComponentHandler.SetComponent<SpeedComponent>(id, newSpeed);
             }
             else
             {
@@ -165,13 +160,23 @@ public class CreationSystem : ISystem
                     //Avec collisions
                     manager.UpdateShapeColor(id, Color.blue);
                 }
+
+                // Seules les cercles dynamiques ont une vitesse et le tag IsOnTopHalf
+                SpeedComponent shapeSpeed = new SpeedComponent();
+                shapeSpeed.speed = shape.initialSpeed;
+                ComponentHandler.SetComponent<SpeedComponent>(id, shapeSpeed);
+
+
+                if(shapeScreenPos.y >= Screen.height / 2.0f){
+                    IsOnTopHalfComponent upperHalfTag = new IsOnTopHalfComponent();
+                    ComponentHandler.SetComponent<IsOnTopHalfComponent>(id, upperHalfTag);
+                }
             }
+
+            
 
             id++;
 
         });
-
-        //Désactivation du système après la première frame
-        //manager.Config.systemsEnabled["creation"] = false;
     }
 }

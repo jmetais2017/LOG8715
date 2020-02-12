@@ -16,6 +16,10 @@ public static class ComponentHandler
         return components.ContainsKey(typeof(T));
     }
 
+    public static bool HasComponent<T>(uint id) {
+        return components[typeof(T)].ContainsKey(id);
+    }
+
     //Renvoie le conteneur de tous les components du type spécifié
     public static Dictionary<uint, T> GetComponentsOfType<T>() where T : IComponent
     {

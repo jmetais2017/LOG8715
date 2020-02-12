@@ -10,6 +10,12 @@ public class MoveSphere {
 
         float radius = ComponentHandler.GetComponent<SizeComponent>(id).size / 2.0f;
         Vector2 position = ComponentHandler.GetComponent<PositionComponent>(id).position;
+
+        // sanity check : if there is no speed, we don't move
+        if (!ComponentHandler.HasComponent<SpeedComponent>(id))
+        {
+            return;
+        }
         Vector2 speed = ComponentHandler.GetComponent<SpeedComponent>(id).speed;
 
         //Mise à jour de la position selon sa vitesse
