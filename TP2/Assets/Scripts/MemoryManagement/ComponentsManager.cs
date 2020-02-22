@@ -154,6 +154,7 @@ internal class ComponentsManager : Singleton<ComponentsManager>
         }*/
 
         IComponent[] arrayT1 = _allComponents[TypeRegistry<T1>.typeID];
+        IComponent[] entityArray = _allComponents[TypeRegistry<EntityComponent>.typeID];
 
         for(uint i = 0; i < arrayT1.Length; i++)
         {
@@ -161,8 +162,8 @@ internal class ComponentsManager : Singleton<ComponentsManager>
             {
                 continue;
             }
-            var entity = (EntityComponent) _allComponents[TypeRegistry<EntityComponent>.typeID][i];
-            lambda(entity, (T1)_allComponents[TypeRegistry<T1>.typeID][i]);
+            var entity = (EntityComponent) entityArray[i];
+            lambda(entity, (T1) arrayT1[i]);
         }
     }
 
@@ -182,6 +183,8 @@ internal class ComponentsManager : Singleton<ComponentsManager>
 
         IComponent[] arrayT1 = _allComponents[TypeRegistry<T1>.typeID];
         IComponent[] arrayT2 = _allComponents[TypeRegistry<T2>.typeID];
+        
+        IComponent[] entityArray = _allComponents[TypeRegistry<EntityComponent>.typeID];
 
         for(uint i = 0; i < arrayT1.Length; i++)
         {
@@ -189,8 +192,8 @@ internal class ComponentsManager : Singleton<ComponentsManager>
             {
                 continue;
             }
-            var entity = (EntityComponent) _allComponents[TypeRegistry<EntityComponent>.typeID][i];
-            lambda(entity, (T1)_allComponents[TypeRegistry<T1>.typeID][i], (T2)_allComponents[TypeRegistry<T2>.typeID][i]);
+            var entity = (EntityComponent) entityArray[i];
+            lambda(entity, (T1) arrayT1[i], (T2) arrayT2[i]);
         }
     }
 
@@ -231,6 +234,8 @@ internal class ComponentsManager : Singleton<ComponentsManager>
         IComponent[] arrayT1 = _allComponents[TypeRegistry<T1>.typeID];
         IComponent[] arrayT2 = _allComponents[TypeRegistry<T2>.typeID];
         IComponent[] arrayT3 = _allComponents[TypeRegistry<T3>.typeID];
+        
+        IComponent[] entityArray = _allComponents[TypeRegistry<EntityComponent>.typeID];
 
         for(uint i = 0; i < arrayT1.Length; i++)
         {
@@ -238,8 +243,8 @@ internal class ComponentsManager : Singleton<ComponentsManager>
             {
                 continue;
             }
-            var entity = (EntityComponent) _allComponents[TypeRegistry<EntityComponent>.typeID][i];
-            lambda(entity, (T1)_allComponents[TypeRegistry<T1>.typeID][i], (T2)_allComponents[TypeRegistry<T2>.typeID][i], (T3)_allComponents[TypeRegistry<T3>.typeID][i]);
+            var entity = (EntityComponent) entityArray[i];
+            lambda(entity, (T1) arrayT1[i], (T2) arrayT2[i], (T3) arrayT3[i]);
         }
     }
 
@@ -264,14 +269,16 @@ internal class ComponentsManager : Singleton<ComponentsManager>
         IComponent[] arrayT3 = _allComponents[TypeRegistry<T3>.typeID];
         IComponent[] arrayT4 = _allComponents[TypeRegistry<T4>.typeID];
 
+        IComponent[] entityArray = _allComponents[TypeRegistry<EntityComponent>.typeID];
+
         for(uint i = 0; i < arrayT1.Length; i++)
         {
             if (arrayT1[i] == null || arrayT2[i] == null || arrayT3[i] == null || arrayT4[i] == null)
             {
                 continue;
             }
-            var entity = (EntityComponent) _allComponents[TypeRegistry<EntityComponent>.typeID][i];
-            lambda(entity, (T1)_allComponents[TypeRegistry<T1>.typeID][i], (T2)_allComponents[TypeRegistry<T2>.typeID][i], (T3)_allComponents[TypeRegistry<T3>.typeID][i], (T4)_allComponents[TypeRegistry<T4>.typeID][i]);
+            var entity = (EntityComponent) entityArray[i];
+            lambda(entity, (T1) arrayT1[i], (T2) arrayT2[i], (T3) arrayT3[i], (T4) arrayT4[i]);
         }
     }
 
