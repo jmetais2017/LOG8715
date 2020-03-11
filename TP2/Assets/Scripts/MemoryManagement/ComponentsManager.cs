@@ -81,7 +81,7 @@ internal class ComponentsManager : Singleton<ComponentsManager>
 
         if(!_allComponents.ContainsKey(TypeRegistry<T>.typeID))
         {
-            _allComponents[TypeRegistry<T>.typeID] = new IComponent[1100];
+            _allComponents[TypeRegistry<T>.typeID] = new IComponent[maxEntities];
         }
 
         _allComponents[TypeRegistry<T>.typeID][entityID.id] = component;
@@ -133,11 +133,11 @@ internal class ComponentsManager : Singleton<ComponentsManager>
     {
         if (!_allComponents.ContainsKey(TypeRegistry<T>.typeID))
         {
-            _allComponents.Add(TypeRegistry<T>.typeID, new IComponent[1100]);
+            _allComponents.Add(TypeRegistry<T>.typeID, new IComponent[maxEntities]);
         }
         else
         {
-           _allComponents[TypeRegistry<T>.typeID] = new IComponent[1100];
+           _allComponents[TypeRegistry<T>.typeID] = new IComponent[maxEntities];
         }
     }
 
