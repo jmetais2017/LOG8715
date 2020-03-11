@@ -43,6 +43,8 @@ internal class ComponentsManager : Singleton<ComponentsManager>
 
     public const int maxEntities = 2000;
 
+    private int nbEntities = ECSManager.Instance.Config.numberOfShapesToSpawn;
+
     public void DebugPrint()
     {
         string toPrint = "";
@@ -81,7 +83,7 @@ internal class ComponentsManager : Singleton<ComponentsManager>
 
         if(!_allComponents.ContainsKey(TypeRegistry<T>.typeID))
         {
-            _allComponents[TypeRegistry<T>.typeID] = new IComponent[maxEntities];
+            _allComponents[TypeRegistry<T>.typeID] = new IComponent[nbEntities];
         }
 
         _allComponents[TypeRegistry<T>.typeID][entityID.id] = component;
@@ -133,11 +135,11 @@ internal class ComponentsManager : Singleton<ComponentsManager>
     {
         if (!_allComponents.ContainsKey(TypeRegistry<T>.typeID))
         {
-            _allComponents.Add(TypeRegistry<T>.typeID, new IComponent[maxEntities]);
+            _allComponents.Add(TypeRegistry<T>.typeID, new IComponent[nbEntities]);
         }
         else
         {
-           _allComponents[TypeRegistry<T>.typeID] = new IComponent[maxEntities];
+           _allComponents[TypeRegistry<T>.typeID] = new IComponent[nbEntities];
         }
     }
 
